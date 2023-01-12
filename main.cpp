@@ -13,16 +13,17 @@ const unsigned int PADDLE_H = 150;
 
 int main()
 {
+    int curr_height =  (HEIGHT - PADDLE_H) / 2;
     sf::RenderWindow window(sf::VideoMode(WIDTH, HEIGHT), "Pong!");
+    // limit frame rate
+    window.setFramerateLimit(60);
     // paddle for the bot
     sf::RectangleShape bot_paddle(Vector2f(PADDLE_W,PADDLE_H));
     bot_paddle.setFillColor(sf::Color::White);
-    bot_paddle.setPosition(Vector2f(35, (HEIGHT - PADDLE_H) / 2));
 
     // make paddle for the player
     sf::RectangleShape player_paddle(Vector2f(PADDLE_W,PADDLE_H));
     player_paddle.setFillColor(sf::Color::White);
-    player_paddle.setPosition(Vector2f(WIDTH - 70, (HEIGHT - PADDLE_H) / 2));   
 
     // player score and bot score start at zero
     int player_score = 0;
@@ -37,9 +38,20 @@ int main()
                 window.close();
         }
 
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+        {
+            // up key is pressed: move paddle up
+            curr_height -= 10;
+        } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
+            curr_height += 10;
+        }
+
+
         window.clear();
         window.draw(bot_paddle);
         window.draw(player_paddle);
+        bot_paddle.setPosition(Vector2f(35, curr_height));
+        player_paddle.setPosition(Vector2f(WIDTH - 70, curr_height));   
         // draw out the lines in the middle of the board
         for (int i = 0; i <= HEIGHT; i += 75) {
             sf::RectangleShape square(Vector2f(25,25));
