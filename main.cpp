@@ -22,6 +22,10 @@ int main()
     player_paddle.setFillColor(sf::Color::White);
     player_paddle.setPosition(Vector2f(WIDTH - 70, (HEIGHT - PADDLE_H) / 2));
 
+    sf::RectangleShape square(Vector2f(25,25));
+    square.setFillColor(sf::Color::White);
+    square.setPosition((WIDTH - 25) / 2, 0);
+
     // draw out the lines in the middle of the board
 
     while (window.isOpen())
@@ -36,6 +40,12 @@ int main()
         window.clear();
         window.draw(bot_paddle);
         window.draw(player_paddle);
+        for (int i = 0; i <= HEIGHT; i += 75) {
+            sf::RectangleShape square(Vector2f(25,25));
+            square.setFillColor(sf::Color::White);
+            square.setPosition((WIDTH - 25) / 2, i);
+            window.draw(square);
+        }
         window.display();
     }
 
