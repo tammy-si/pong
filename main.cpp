@@ -1,5 +1,6 @@
 #include <SFML/Graphics.hpp>
 #include <string>
+#include <iostream>
 
 // clang++ main.cpp -I/opt/homebrew/Cellar/sfml/2.5.1_2/include/ -L/opt/homebrew/Cellar/sfml/2.5.1_2/lib  -lsfml-graphics -lsfml-window -lsfml-system -std=c++20
 using namespace sf;
@@ -17,6 +18,9 @@ int main()
     sf::RenderWindow window(sf::VideoMode(WIDTH, HEIGHT), "Pong!");
     // limit frame rate
     window.setFramerateLimit(60);
+
+    sf::Font font;
+    font.loadFromFile("VCR_OSD_MONO_1.001.ttf");
     // paddle for the bot
     sf::RectangleShape bot_paddle(Vector2f(PADDLE_W,PADDLE_H));
     bot_paddle.setFillColor(sf::Color::White);
@@ -40,12 +44,18 @@ int main()
 
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
         {
+            // check to make sure it's not out of bounds
+            if (curr_height > 0) {
             // up key is pressed: move paddle up
-            curr_height -= 10;
-        } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
-            curr_height += 10;
-        }
+                curr_height -= 10;
 
+            }
+        } 
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
+            if (curr_height < 850){
+                curr_height += 10;
+            }
+        }
 
         window.clear();
         window.draw(bot_paddle);
@@ -59,9 +69,6 @@ int main()
             square.setPosition((WIDTH - 25) / 2, i);
             window.draw(square);
         }
-
-        sf::Font font;
-        font.loadFromFile("VCR_OSD_MONO_1.001.ttf");
         // draw out the bot score
         sf::Text bot_score_display;
         bot_score_display.setString(to_string(bot_score));
