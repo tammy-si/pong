@@ -65,10 +65,13 @@ int main()
         }
 
         window.clear();
-        window.draw(bot_paddle);
-        window.draw(player_paddle);
+
+        // draw out paddles
         bot_paddle.setPosition(Vector2f(35, bot_height));
-        player_paddle.setPosition(Vector2f(WIDTH - 70, curr_height));   
+        player_paddle.setPosition(Vector2f(WIDTH - 70, curr_height)); 
+        window.draw(player_paddle);
+        window.draw(bot_paddle);
+
         // draw out the lines in the middle of the board
         for (int i = 0; i <= HEIGHT; i += 75) {
             sf::RectangleShape square(Vector2f(25,25));
@@ -76,6 +79,7 @@ int main()
             square.setPosition((WIDTH - 25) / 2, i);
             window.draw(square);
         }
+
         // draw out the bot score
         sf::Text bot_score_display;
         bot_score_display.setString(to_string(bot_score));
@@ -84,6 +88,7 @@ int main()
         bot_score_display.setPosition(525, 25);
         bot_score_display.setCharacterSize(75);
         window.draw(bot_score_display);
+
         // draw out the player score
         sf::Text player_score_display;
         player_score_display.setString(to_string(bot_score));
@@ -92,9 +97,21 @@ int main()
         player_score_display.setPosition(725, 25);
         player_score_display.setCharacterSize(75);
         window.draw(player_score_display);
+        
+        // check for ball colliding with right paddle (player paddle)
+        // Width of the window -95 because -70 is where the paddle is at and extra -25 for the width of the ball
+        if ((ball_x >= WIDTH - 95) && (ball_y > curr_height) && (ball_y < curr_height + PADDLE_H)) {
+            ball_dx = -ball_dx;
+        // check for collision with the left paddle
+        // ball_x 60 because of the right edge of the bot paddle met up with ball left edge
+        } else if ((ball_x <= 60) && (ball_y > bot_height) && (ball_y < bot_height + PADDLE_H)) {
+            ball_dx = -ball_dx;
+        }
+        // ball movement
         ball_x += ball_dx;
         ball.setPosition(ball_x, ball_y);
         window.draw(ball);
+
         window.display();
     }
 
