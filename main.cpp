@@ -15,6 +15,7 @@ const unsigned int PADDLE_H = 150;
 int main()
 {
     int curr_height =  (HEIGHT - PADDLE_H) / 2;
+    int bot_height = (HEIGHT - PADDLE_H) / 2;
     sf::RenderWindow window(sf::VideoMode(WIDTH, HEIGHT), "Pong!");
     // limit frame rate
     window.setFramerateLimit(60);
@@ -60,7 +61,7 @@ int main()
         window.clear();
         window.draw(bot_paddle);
         window.draw(player_paddle);
-        bot_paddle.setPosition(Vector2f(35, curr_height));
+        bot_paddle.setPosition(Vector2f(35, bot_height));
         player_paddle.setPosition(Vector2f(WIDTH - 70, curr_height));   
         // draw out the lines in the middle of the board
         for (int i = 0; i <= HEIGHT; i += 75) {
