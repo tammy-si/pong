@@ -11,7 +11,6 @@ const unsigned int HEIGHT = 1000;
 const unsigned int PADDLE_W = 35;
 const unsigned int PADDLE_H = 150;
 
-
 int main()
 {
     int curr_height =  (HEIGHT - PADDLE_H) / 2;
@@ -33,6 +32,13 @@ int main()
     // player score and bot score start at zero
     int player_score = 0;
     int bot_score = 0;
+
+    // for the ball
+    sf::RectangleShape ball(Vector2f(25,25));
+    int ball_x = (WIDTH - 25) / 2;
+    int ball_y = (HEIGHT - 25) /2;
+    int ball_dx = 10;
+    int ball_dy = 0;
 
     while (window.isOpen())
     {
@@ -86,6 +92,9 @@ int main()
         player_score_display.setPosition(725, 25);
         player_score_display.setCharacterSize(75);
         window.draw(player_score_display);
+        ball_x += ball_dx;
+        ball.setPosition(ball_x, ball_y);
+        window.draw(ball);
         window.display();
     }
 
