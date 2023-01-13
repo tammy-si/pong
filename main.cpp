@@ -1,5 +1,6 @@
 #include <SFML/Graphics.hpp>
 #include <string>
+#include <iostream>
 
 // clang++ main.cpp -I/opt/homebrew/Cellar/sfml/2.5.1_2/include/ -L/opt/homebrew/Cellar/sfml/2.5.1_2/lib  -lsfml-graphics -lsfml-window -lsfml-system -std=c++20
 using namespace sf;
@@ -13,16 +14,21 @@ const unsigned int PADDLE_H = 150;
 
 int main()
 {
+    int curr_height =  (HEIGHT - PADDLE_H) / 2;
+    int bot_height = (HEIGHT - PADDLE_H) / 2;
     sf::RenderWindow window(sf::VideoMode(WIDTH, HEIGHT), "Pong!");
+    // limit frame rate
+    window.setFramerateLimit(60);
+
+    sf::Font font;
+    font.loadFromFile("VCR_OSD_MONO_1.001.ttf");
     // paddle for the bot
     sf::RectangleShape bot_paddle(Vector2f(PADDLE_W,PADDLE_H));
     bot_paddle.setFillColor(sf::Color::White);
-    bot_paddle.setPosition(Vector2f(35, (HEIGHT - PADDLE_H) / 2));
 
     // make paddle for the player
     sf::RectangleShape player_paddle(Vector2f(PADDLE_W,PADDLE_H));
     player_paddle.setFillColor(sf::Color::White);
-    player_paddle.setPosition(Vector2f(WIDTH - 70, (HEIGHT - PADDLE_H) / 2));   
 
     // player score and bot score start at zero
     int player_score = 0;
@@ -37,9 +43,26 @@ int main()
                 window.close();
         }
 
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+        {
+            // check to make sure it's not out of bounds
+            if (curr_height > 0) {
+            // up key is pressed: move paddle up
+                curr_height -= 10;
+
+            }
+        } 
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
+            if (curr_height < 850){
+                curr_height += 10;
+            }
+        }
+
         window.clear();
         window.draw(bot_paddle);
         window.draw(player_paddle);
+        bot_paddle.setPosition(Vector2f(35, bot_height));
+        player_paddle.setPosition(Vector2f(WIDTH - 70, curr_height));   
         // draw out the lines in the middle of the board
         for (int i = 0; i <= HEIGHT; i += 75) {
             sf::RectangleShape square(Vector2f(25,25));
@@ -47,9 +70,6 @@ int main()
             square.setPosition((WIDTH - 25) / 2, i);
             window.draw(square);
         }
-
-        sf::Font font;
-        font.loadFromFile("VCR_OSD_MONO_1.001.ttf");
         // draw out the bot score
         sf::Text bot_score_display;
         bot_score_display.setString(to_string(bot_score));
