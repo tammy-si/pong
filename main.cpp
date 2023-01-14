@@ -144,11 +144,12 @@ int main()
         // bot movement
         // predict where the ball will be heading to and move the bot paddle based on the prediction
         int predicted = ball_y - (ball_dy / ball_dx) * ball_x;
+        // try to make it less jittery
         if (!(predicted > bot_height && predicted < bot_height + PADDLE_H)) {
             // go up more if needed or down more
             if ((bot_height < predicted) && (bot_height < 850)){
                 bot_height += 10;
-            } else if ((bot_height > predicted) && (curr_height > 0)) {
+            } else if ((bot_height > predicted) && (bot_height > 0)) {
                 bot_height -= 10;
             }
         }
