@@ -1,11 +1,11 @@
 #include <SFML/Graphics.hpp>
 #include <string>
-#include <iostream>
 
 // clang++ main.cpp -I/opt/homebrew/Cellar/sfml/2.5.1_2/include/ -L/opt/homebrew/Cellar/sfml/2.5.1_2/lib  -lsfml-graphics -lsfml-window -lsfml-system -std=c++20
 using namespace sf;
 using namespace std;
 
+// default size of the window and the paddles
 const int WIDTH = 1300;
 const int HEIGHT = 1000;
 const int PADDLE_W = 35;
@@ -83,7 +83,6 @@ int main()
         if ((ball_y <= 0) ||  (ball_y >= HEIGHT - 25)){
             ball_dy = -ball_dy;
         }  
-
 
         // when the ball hits the left edge give the point to the player
         if (ball_x <= 0) {
