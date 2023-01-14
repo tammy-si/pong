@@ -1,11 +1,11 @@
 #include <SFML/Graphics.hpp>
 #include <string>
-#include <iostream>
 
 // clang++ main.cpp -I/opt/homebrew/Cellar/sfml/2.5.1_2/include/ -L/opt/homebrew/Cellar/sfml/2.5.1_2/lib  -lsfml-graphics -lsfml-window -lsfml-system -std=c++20
 using namespace sf;
 using namespace std;
 
+// default size of the window and the paddles
 const int WIDTH = 1300;
 const int HEIGHT = 1000;
 const int PADDLE_W = 35;
@@ -65,30 +65,16 @@ int main()
         }
 
         window.clear();
-
-        // draw out paddles
-        bot_paddle.setPosition(Vector2f(35, bot_height));
-        player_paddle.setPosition(Vector2f(WIDTH - 70, curr_height)); 
-        window.draw(player_paddle);
-        window.draw(bot_paddle);
-
-        // draw out the lines in the middle of the board
-        for (int i = 0; i <= HEIGHT; i += 75) {
-            sf::RectangleShape square(Vector2f(25,25));
-            square.setFillColor(sf::Color::White);
-            square.setPosition((WIDTH - 25) / 2, i);
-            window.draw(square);
-        }
         
         // check for ball colliding with right paddle (player paddle)
         // Width of the window -95 because -70 is where the paddle is at and extra -25 for the width of the ball
-        if ((ball_x >= WIDTH - 95) && (ball_x <= 1240) && (ball_y > curr_height) && (ball_y < curr_height + PADDLE_H)) {
+        if ((ball_x >= WIDTH - 95) && (ball_x <= 1240) && (ball_y > curr_height-25) && (ball_y < curr_height + PADDLE_H)) {
             ball_dx = -15;
             // depending on where the ball hits the paddle decide the y change
             ball_dy = (ball_y + 12.5 - (2 * curr_height + PADDLE_H)/2)/4;
         // check for collision with the left paddle
         // ball_x 60 because of the right edge of the bot paddle met up with ball left edge
-        } else if ((ball_x <= 60) && (ball_x >= 35) && (ball_y > bot_height) && (ball_y < bot_height + PADDLE_H)) {
+        } else if ((ball_x <= 60) && (ball_x >= 35) && (ball_y > bot_height-25) && (ball_y < bot_height + PADDLE_H)) {
             ball_dx = 15;
             ball_dy = (ball_y + 12.5 - (2 * bot_height + PADDLE_H)/2)/4;
         }
@@ -105,12 +91,15 @@ int main()
             ball_x = (WIDTH - 25) / 2;
             ball_y = (HEIGHT - 25) /2;
             ball_dx = -5;
+            ball_dy = 10;
+        // ball hitting the right edge
         } else if (ball_x >= WIDTH - 25) {
             bot_score += 1;
             ball.setPosition((WIDTH - 25) / 2, (HEIGHT - 25) /2);
             ball_x = (WIDTH - 25) / 2;
             ball_y = (HEIGHT - 25) /2;      
-            ball_dx = 5;      
+            ball_dx = 5;   
+            ball_dy = 10;   
         }
 
         // draw out the bot score
@@ -131,12 +120,38 @@ int main()
         player_score_display.setCharacterSize(75);
         window.draw(player_score_display);
 
+        // draw out paddles
+        bot_paddle.setPosition(Vector2f(35, bot_height));
+        player_paddle.setPosition(Vector2f(WIDTH - 70, curr_height)); 
+        window.draw(player_paddle);
+        window.draw(bot_paddle);
+
+        // draw out the lines in the middle of the board
+        for (int i = 0; i <= HEIGHT; i += 75) {
+            sf::RectangleShape square(Vector2f(25,25));
+            square.setFillColor(sf::Color::White);
+            square.setPosition((WIDTH - 25) / 2, i);
+            window.draw(square);
+        }
+
         // ball movement
         ball_x += ball_dx;
         ball_y += ball_dy;
         ball.setPosition(ball_x, ball_y);
         window.draw(ball);
 
+        // bot movement
+        // predict where the ball will be heading to and move the bot paddle based on the prediction
+        int predicted = ball_y - (ball_dy / ball_dx) * ball_x;
+        // try to make it less jittery
+        if (!(predicted > bot_height && predicted < bot_height + PADDLE_H)) {
+            // go up more if needed or down more
+            if ((bot_height < predicted) && (bot_height < 850)){
+                bot_height += 10;
+            } else if ((bot_height > predicted) && (bot_height > 0)) {
+                bot_height -= 10;
+            }
+        }
         window.display();
     }
 
