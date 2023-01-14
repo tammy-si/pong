@@ -6,10 +6,10 @@
 using namespace sf;
 using namespace std;
 
-const unsigned int WIDTH = 1300;
-const unsigned int HEIGHT = 1000;
-const unsigned int PADDLE_W = 35;
-const unsigned int PADDLE_H = 150;
+const int WIDTH = 1300;
+const int HEIGHT = 1000;
+const int PADDLE_W = 35;
+const int PADDLE_H = 150;
 
 int main()
 {
@@ -22,11 +22,11 @@ int main()
     sf::Font font;
     font.loadFromFile("VCR_OSD_MONO_1.001.ttf");
     // paddle for the bot
-    sf::RectangleShape bot_paddle(Vector2f(PADDLE_W,PADDLE_H));
+    sf::RectangleShape bot_paddle(Vector2f(PADDLE_W, PADDLE_H));
     bot_paddle.setFillColor(sf::Color::White);
 
     // make paddle for the player
-    sf::RectangleShape player_paddle(Vector2f(PADDLE_W,PADDLE_H));
+    sf::RectangleShape player_paddle(Vector2f(PADDLE_W, PADDLE_H));
     player_paddle.setFillColor(sf::Color::White);
 
     // player score and bot score start at zero
@@ -55,9 +55,9 @@ int main()
             if (curr_height > 0) {
             // up key is pressed: move paddle up
                 curr_height -= 10;
-
             }
         } 
+        // move the paddle down with the down key
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
             if (curr_height < 850){
                 curr_height += 10;
@@ -79,6 +79,39 @@ int main()
             square.setPosition((WIDTH - 25) / 2, i);
             window.draw(square);
         }
+        
+        // check for ball colliding with right paddle (player paddle)
+        // Width of the window -95 because -70 is where the paddle is at and extra -25 for the width of the ball
+        if ((ball_x >= WIDTH - 95) && (ball_x <= 1240) && (ball_y > curr_height) && (ball_y < curr_height + PADDLE_H)) {
+            ball_dx = -15;
+            // depending on where the ball hits the paddle decide the y change
+            ball_dy = (ball_y + 12.5 - (2 * curr_height + PADDLE_H)/2)/4;
+        // check for collision with the left paddle
+        // ball_x 60 because of the right edge of the bot paddle met up with ball left edge
+        } else if ((ball_x <= 60) && (ball_x >= 35) && (ball_y > bot_height) && (ball_y < bot_height + PADDLE_H)) {
+            ball_dx = 15;
+            ball_dy = (ball_y + 12.5 - (2 * bot_height + PADDLE_H)/2)/4;
+        }
+
+        // bouncing off the ceiling and floor
+        if ((ball_y <= 0) ||  (ball_y >= HEIGHT - 25)){
+            ball_dy = -ball_dy;
+        }  
+
+        // when the ball hits the left edge give the point to the player
+        if (ball_x <= 0) {
+            player_score += 1;
+            // move the ball back into the middle
+            ball_x = (WIDTH - 25) / 2;
+            ball_y = (HEIGHT - 25) /2;
+            ball_dx = -5;
+        } else if (ball_x >= WIDTH - 25) {
+            bot_score += 1;
+            ball.setPosition((WIDTH - 25) / 2, (HEIGHT - 25) /2);
+            ball_x = (WIDTH - 25) / 2;
+            ball_y = (HEIGHT - 25) /2;      
+            ball_dx = 5;      
+        }
 
         // draw out the bot score
         sf::Text bot_score_display;
@@ -91,24 +124,16 @@ int main()
 
         // draw out the player score
         sf::Text player_score_display;
-        player_score_display.setString(to_string(bot_score));
+        player_score_display.setString(to_string(player_score));
         player_score_display.setFont(font);
         player_score_display.setFillColor(sf::Color::White);
         player_score_display.setPosition(725, 25);
         player_score_display.setCharacterSize(75);
         window.draw(player_score_display);
-        
-        // check for ball colliding with right paddle (player paddle)
-        // Width of the window -95 because -70 is where the paddle is at and extra -25 for the width of the ball
-        if ((ball_x >= WIDTH - 95) && (ball_y > curr_height) && (ball_y < curr_height + PADDLE_H)) {
-            ball_dx = -ball_dx;
-        // check for collision with the left paddle
-        // ball_x 60 because of the right edge of the bot paddle met up with ball left edge
-        } else if ((ball_x <= 60) && (ball_y > bot_height) && (ball_y < bot_height + PADDLE_H)) {
-            ball_dx = -ball_dx;
-        }
+
         // ball movement
         ball_x += ball_dx;
+        ball_y += ball_dy;
         ball.setPosition(ball_x, ball_y);
         window.draw(ball);
 
