@@ -163,14 +163,41 @@ int main()
         
         // gameover screen
         if (gameover) {
+            // drawing the winner
             string winner = (player_score > bot_score) ? "Player " : "Bot ";
             sf::Text win_display;
             win_display.setString(winner + "wins");
             win_display.setFont(font);
             win_display.setFillColor(sf::Color::White);
-            win_display.setPosition(450, 300);
+            win_display.setPosition(450, 200);
             win_display.setCharacterSize(75);
             window.draw(win_display);
+
+            // drawing the replay button
+            RectangleShape replay_button(Vector2f(400, 100));
+            replay_button.setFillColor(Color::White);
+            replay_button.setPosition(450, 400);
+            window.draw(replay_button);
+            Text replay_text;
+            replay_text.setString("Replay");
+            replay_text.setFont(font);
+            replay_text.setFillColor(Color::Black);
+            replay_text.setPosition(500, 400);
+            replay_text.setCharacterSize(75);
+            window.draw(replay_text);
+
+            // drawing the exit button
+            RectangleShape exit_button(Vector2f(400, 100));
+            exit_button.setFillColor(Color::White);
+            exit_button.setPosition(450, 600);
+            window.draw(exit_button);
+            Text exit_text;
+            exit_text.setString("Exit");
+            exit_text.setFillColor(Color::Black);
+            exit_text.setFont(font);
+            exit_text.setPosition(500, 600);
+            exit_text.setCharacterSize(75);
+            window.draw(exit_text);
         }
         window.display();
     }
