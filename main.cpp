@@ -1,5 +1,6 @@
 #include <SFML/Graphics.hpp>
 #include <string>
+#include <iostream>
 
 // clang++ main.cpp -I/opt/homebrew/Cellar/sfml/2.5.1_2/include/ -L/opt/homebrew/Cellar/sfml/2.5.1_2/lib  -lsfml-graphics -lsfml-window -lsfml-system -std=c++20
 using namespace sf;
@@ -50,6 +51,15 @@ int main()
         {
             if (event.type == sf::Event::Closed)
                 window.close();
+            // when the user clicks during gameover time
+            if (event.type == Event::MouseButtonPressed && gameover) {
+                sf::Vector2i position = sf::Mouse::getPosition(window);
+                // after getting the position of where the user clicked
+                // check if the user clicked on the replay button
+                if (position.x >= 450 && position.x <= 850 && position.y >= 600 && position.y <= 700) {
+                    window.close();
+                }
+            }
         }
         if (!gameover) {
             if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
