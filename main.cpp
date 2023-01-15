@@ -56,7 +56,16 @@ int main()
                 sf::Vector2i position = sf::Mouse::getPosition(window);
                 // after getting the position of where the user clicked
                 // check if the user clicked on the replay button
-                if (position.x >= 450 && position.x <= 850 && position.y >= 600 && position.y <= 700) {
+                if (position.x >= 450 && position.x <= 850 && position.y >= 400 && position.y <= 500) {
+                    gameover = false;
+                    player_score = 0;
+                    bot_score = 0;
+                    curr_height =  (HEIGHT - PADDLE_H) / 2;
+                    bot_height = (HEIGHT - PADDLE_H) / 2;
+                    ball_dx = 10;
+                    ball_dy = 0;
+                // check if the user clicked on the exit button
+                } else if (position.x >= 450 && position.x <= 850 && position.y >= 600 && position.y <= 700) {
                     window.close();
                 }
             }
